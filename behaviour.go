@@ -2,13 +2,16 @@ package behaviour
 
 import (
 	"strings"
-	"testing"
 )
+
+type Logger interface {
+	Log(...interface{})
+}
 
 type Behaviour struct {
 	desc  string
 	depth int
-	t     *testing.T
+	t     Logger
 }
 
 // Returns the behaviour description, indented according to its depth.
@@ -30,9 +33,9 @@ func (behaviour Behaviour) It(desc string, block func()) {
 }
 
 // Specifies a feature.
-func Describe(t *testing.T, desc string, block func(Behaviour)) Behaviour {
-	b := Behaviour{desc, 0, t}
-	t.Log(b)
+func Describe(l Logger, desc string, block func(Behaviour)) Behaviour {
+	b := Behaviour{desc, 0, l}
+	l.Log(b)
 	block(b)
 	return b
 }
